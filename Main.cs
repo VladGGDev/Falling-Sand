@@ -15,6 +15,7 @@ public class Main : Game
 	Sand sandParticle = new();
 	Solid solidParticle = new();
 	Water waterParticle = new();
+	Acid acidParticle = new();
 	DrawableParticleGrid grid;
 
 	public static readonly bool IsDebug = false;
@@ -45,6 +46,7 @@ public class Main : Game
 		ParticleGrid.RegisterParticle(sandParticle);
 		ParticleGrid.RegisterParticle(solidParticle);
 		ParticleGrid.RegisterParticle(waterParticle);
+		ParticleGrid.RegisterParticle(acidParticle);
 		grid = new(new Vector2(0, 0), 5, 100, 100);
 		DrawableParticleGrid.ParticleId = ParticleGrid.IdFromParticle(sandParticle);
 
@@ -76,6 +78,8 @@ public class Main : Game
 			DrawableParticleGrid.ParticleId = ParticleGrid.IdFromParticle(waterParticle);
 		if (Input.GetKeyDown(Keys.D3))
 			DrawableParticleGrid.ParticleId = ParticleGrid.IdFromParticle(solidParticle);
+		if (Input.GetKeyDown(Keys.D4))
+			DrawableParticleGrid.ParticleId = ParticleGrid.IdFromParticle(acidParticle);
 
 		if (!Input.GetKey(Keys.Space) && IsDebug)
 			return;
@@ -95,7 +99,7 @@ public class Main : Game
 			blendState: BlendState.NonPremultiplied,
 			samplerState: SamplerState.PointClamp);
 
-		ParticleUtility.DrawParticleGrid(grid, _spriteBatch);
+		_spriteBatch.DrawParticleGrid(grid);
 
 		_spriteBatch.End();
 

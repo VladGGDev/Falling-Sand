@@ -7,6 +7,6 @@
 	{
 		if (other.CorrosionResistance > CorrosionPower)
 			return false;
-		return ParticleUtility.RandomBool(CorrosionChance * other.CorrosionMultiplier);
+		return ParticleUtility.RandomBool(CorrosionChance * other.CorrosionChanceMultiplier);
 	}
 }

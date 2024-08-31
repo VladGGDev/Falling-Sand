@@ -40,7 +40,7 @@ public class DrawableParticleGrid : ParticleGrid
 				else if (Input.GetKey(Keys.LeftControl))
 					DrawCircle(erasing);
 				else
-					ParticleUtility.DrawLine(this, erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos), _mouseGridPos);
+					this.DrawLine(erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos), _mouseGridPos);
 			}
 		}
 
@@ -55,7 +55,7 @@ public class DrawableParticleGrid : ParticleGrid
 			for (int x = -BrushSize / 2; x < (int)Math.Ceiling((float)BrushSize / 2); x++)
 			{
 				Point offset = new(x, y);
-				ParticleUtility.DrawLine(this, erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos + offset), ClampInsideBounds(_mouseGridPos + offset));
+				this.DrawLine(erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos + offset), ClampInsideBounds(_mouseGridPos + offset));
 			}
 		}
 	}
@@ -69,9 +69,9 @@ public class DrawableParticleGrid : ParticleGrid
 				if (x * x + y * y > (BrushSize / 2)*(BrushSize / 2))
 					continue;
 				Point offset = new(x, y);
-				ParticleUtility.DrawLine(this, erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos + offset), ClampInsideBounds(_mouseGridPos + offset));
+				this.DrawLine(erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos + offset), ClampInsideBounds(_mouseGridPos + offset));
 			}
 		}
-		ParticleUtility.DrawLine(this, erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos), _mouseGridPos);
+		this.DrawLine(erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos), _mouseGridPos);
 	}
 }

@@ -1,13 +1,16 @@
 ﻿using System;
 
-public class Sand : IParticle, IDensity
+public class Sand : IParticle, IDensity, ICorrodible
 {
 	public int Density { get; init; } = 10000;
-	public float Viscosity { get; init; } = 0.5f;
+	public float PassThroughChance { get; init; } = 0.9f;
+
+	public int CorrosionResistance { get; init; } = 10;
+	public float CorrosionChanceMultiplier { get; init; } = 0.75f;
 
 	public Color GetColor(ParticleGrid grid, Point position)
 	{
-		return Color.Lerp(Color.Yellow, new(1f, 0.7f, 0), ParticleUtility.NoiseGrid(grid, position));
+		return Color.Lerp(Color.Yellow, new(1f, 0.7f, 0), grid.NoiseGrid(position));
 	}
 
 	public void Update(ParticleGrid grid, Point position)
@@ -15,32 +18,9 @@ public class Sand : IParticle, IDensity
 		Point down = position + new Point(0, 1);
 		Point downRight = position + new Point(1, 1);
 		Point downLeft = position + new Point(-1, 1);
-		if (DoCalculation(grid, position, down)) return;
-		else if(DoCalculation(grid, position, ParticleUtility.RandomBool() ? downLeft : downRight)) return;
-		else if(DoCalculation(grid, position, downRight)) return;
-		else if(DoCalculation(grid, position, downLeft)) return;
-	}
-
-	bool DoCalculation(ParticleGrid grid, Point position, Point other)
-	{
-		if (!grid.IsInsideBounds(other))
-			return false;
-
-		IDensity particle = grid.GetParticle(other) as IDensity;
-		if (particle == null)
-		{
-			if (grid.IsEmpty(other))
-			{
-				grid.MoveParticle(position, other);
-				return true;
-			}
-		}
-		else if (particle.CanBePassedThrough(this))
-		{
-			grid.SwapParticle(position, other);
-			return true;
-		}
-
-		return false;
+		if (grid.TryDensityMove(this, position, down)) return;
+		else if(grid.TryDensityMove(this, position, ParticleUtility.RandomBool() ? downLeft : downRight)) return;
+		else if(grid.TryDensityMove(this, position, downRight)) return;
+		else if(grid.TryDensityMove(this, position, downLeft)) return;
 	}
 }

@@ -3,11 +3,11 @@
 public class Water : IParticle, IDensity
 {
 	public int Density { get; init; } = 1000;
-	public float Viscosity { get; init; } = 0.4f;
+	public float PassThroughChance { get; init; } = 0.4f;
 
 	public Color GetColor(ParticleGrid grid, Point position)
 	{
-		return Color.Lerp(new(0, 136, 255), new(0, 110, 255), ParticleUtility.NoiseGrid(grid, position));
+		return Color.Lerp(new(0, 136, 255), new(0, 110, 255), grid.NoiseGrid(position));
 	}
 
 	public void Update(ParticleGrid grid, Point position)
@@ -18,19 +18,19 @@ public class Water : IParticle, IDensity
 		Point downLeft = position + new Point(-1, 1);
 		Point right = position + new Point(1, 0);
 		Point left = position + new Point(-1, 0);
-		if (ParticleUtility.ValidMovePosition(grid, down))
+		if (grid.ValidMovePosition(down))
 			grid.MoveParticle(position, down);
-		else if (ParticleUtility.ValidMovePosition(grid, goRight ? downRight : downLeft))
+		else if (grid.ValidMovePosition(goRight ? downRight : downLeft))
 			grid.MoveParticle(position, goRight ? downRight : downLeft);
-		else if (ParticleUtility.ValidMovePosition(grid, downRight))
+		else if (grid.ValidMovePosition(downRight))
 			grid.MoveParticle(position, downRight);
-		else if (ParticleUtility.ValidMovePosition(grid, downLeft))
+		else if (grid.ValidMovePosition(downLeft))
 			grid.MoveParticle(position, downLeft);
-		else if (ParticleUtility.ValidMovePosition(grid, goRight ? right : left))
+		else if (grid.ValidMovePosition(goRight ? right : left))
 			grid.MoveParticle(position, goRight ? right : left);
-		else if (ParticleUtility.ValidMovePosition(grid, right))
+		else if (grid.ValidMovePosition(right))
 			grid.MoveParticle(position, right);
-		else if (ParticleUtility.ValidMovePosition(grid, left))
+		else if (grid.ValidMovePosition(left))
 			grid.MoveParticle(position, left);
 	}
 }

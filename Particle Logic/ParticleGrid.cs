@@ -55,67 +55,38 @@ public class ParticleGrid
 	#region Updating
 	public virtual void Update()
 	{
-		for (int chunkY = ChunksY - 1; chunkY >= 0; chunkY--)
-		{
-			int startX, targetX, dx;
-			if (chunkY % 2 == 0)
-			{
-				startX = 0;
-				targetX = ChunksX - 1;
-				dx = 1;
-			}
-			else
-			{
-				startX = ChunksX - 1;
-				targetX = 0;
-				dx = -1;
-			}
-
-			for (int chunkX = startX; (dx > 0 ? chunkX <= targetX : chunkX >= targetX); chunkX += dx)
-			{
-				ChunkToPosition(chunkX, chunkY, out int x, out int y);
-				UpdateParticlesInChunk(x, y);
-			}
-		}
-		Draw();
-		ResetUpdated();
-	}
-
-	protected void UpdateParticlesInChunk(int posX, int posY)
-	{
-		if (!IsChunkUpdated(posX, posY))
-			return;
-
 		// Starting from the bottom, going right and left alternatively
-		for (int y = posY + ChunkSize - 1; y >= posY; y--)
+		for (int y = Height - 1; y >= 0; y--)
 		{
 			int startX, targetX, dx;
 			if (y % 2 == 0)
 			{
-				startX = posX;
-				targetX = posX + ChunkSize - 1;
+				startX = 0;
+				targetX = Width - 1;
 				dx = 1;
 			}
 			else
 			{
-				startX = posX + ChunkSize - 1;
-				targetX = posX + 0;
+				startX = Width - 1;
+				targetX = 0;
 				dx = -1;
 			}
 
 			for (int x = startX; (dx > 0 ? x <= targetX : x >= targetX); x += dx)
 			{
-				if (!IsInsideBounds(x, y))
-					continue;
 				if (_grid[y, x] == 0) // Skip over empty particles
 					continue;
 				if (_updated[y, x]) // Don't update the same particle multiple times
 					continue;
-				
+				if (!IsChunkUpdated(x, y))
+					continue;
+
 				IParticle current = ParticleFromId(_grid[y, x]);
 				current.Update(this, new(x, y));
 			}
 		}
+		Draw();
+		ResetUpdated();
 	}
 
 	protected virtual void Draw()
@@ -207,21 +178,6 @@ public class ParticleGrid
 	{
 		chunkX = x / ChunkSize;
 		chunkY = y / ChunkSize;
-	}
-
-	protected Point ChunkToPosition(Point chunkPosition) => ChunkToPosition(chunkPosition.X, chunkPosition.Y);
-	protected Point ChunkToPosition(int chunkX, int chunkY)
-	{
-		return new Point(chunkX * ChunkSize, chunkY * ChunkSize);
-	}
-	protected void ChunkToPosition(Point chunkPosition, out Point position)
-	{
-		position = new(chunkPosition.X * ChunkSize, chunkPosition.Y * ChunkSize);
-	}
-	protected void ChunkToPosition(int chunkX, int chunkY, out int x, out int y)
-	{
-		x = chunkX * ChunkSize;
-		y = chunkY * ChunkSize;
 	}
 
 

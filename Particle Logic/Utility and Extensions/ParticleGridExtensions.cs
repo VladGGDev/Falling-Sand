@@ -4,7 +4,7 @@ public static class ParticleGridExtensions
 {
 	public static float NoiseGrid(this ParticleGrid grid, Point position) => grid.NoiseGrid[position.Y, position.X];
 
-	public static void DrawLine(this ParticleGrid grid, int id, Point from, Point to)
+	public static void DrawLine(this ParticleGrid grid, int id, Point from, Point to, bool updateChunk = false)
 	{
 		int width = Math.Abs(to.X - from.X);
 		int height = -Math.Abs(to.Y - from.Y);
@@ -17,7 +17,7 @@ public static class ParticleGridExtensions
 
 		while (true)
 		{
-			grid.CreateParticle(id, from.X, from.Y);
+			grid.CreateParticle(id, from.X, from.Y, updateChunk);
 
 			if (from.X == to.X && from.Y == to.Y)
 				break;

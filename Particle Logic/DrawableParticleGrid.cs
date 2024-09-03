@@ -12,7 +12,7 @@ public class DrawableParticleGrid : ParticleGrid
 	public static int ParticleId { get; set; } = 0;
 	public static int BrushSize { get; set; } = 5;
 
-	public DrawableParticleGrid(Vector2 position, float scale, int width, int height) : base(width, height)
+	public DrawableParticleGrid(Vector2 position, float scale, int width, int height, int chunkSize = 8) : base(width, height, chunkSize)
 	{
 		Position = position;
 		Scale = scale;
@@ -40,7 +40,7 @@ public class DrawableParticleGrid : ParticleGrid
 				else if (Input.GetKey(Keys.LeftControl))
 					DrawCircle(erasing);
 				else
-					this.DrawLine(erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos), _mouseGridPos);
+					this.DrawLine(erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos), _mouseGridPos, true);
 			}
 		}
 
@@ -55,7 +55,7 @@ public class DrawableParticleGrid : ParticleGrid
 			for (int x = -BrushSize / 2; x < (int)Math.Ceiling((float)BrushSize / 2); x++)
 			{
 				Point offset = new(x, y);
-				this.DrawLine(erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos + offset), ClampInsideBounds(_mouseGridPos + offset));
+				this.DrawLine(erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos + offset), ClampInsideBounds(_mouseGridPos + offset), true);
 			}
 		}
 	}
@@ -69,7 +69,7 @@ public class DrawableParticleGrid : ParticleGrid
 				if (x * x + y * y > (BrushSize / 2)*(BrushSize / 2))
 					continue;
 				Point offset = new(x, y);
-				this.DrawLine(erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos + offset), ClampInsideBounds(_mouseGridPos + offset));
+				this.DrawLine(erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos + offset), ClampInsideBounds(_mouseGridPos + offset), true);
 			}
 		}
 		this.DrawLine(erasing ? 0 : ParticleId, ClampInsideBounds(_prevMouseGridPos), _mouseGridPos);

@@ -5,7 +5,7 @@
 
 	public bool CanCorrode(ICorrodible other)
 	{
-		if (other.CorrosionResistance > CorrosionPower)
+		if (other.CorrosionResistance >= CorrosionPower)
 			return false;
 		return ParticleUtility.RandomBool(CorrosionChance * other.CorrosionChanceMultiplier);
 	}

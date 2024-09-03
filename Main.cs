@@ -36,8 +36,8 @@ public class Main : Game
 		Window.AllowAltF4 = true;
 		Window.AllowUserResizing = true;
 
-		_graphics.PreferredBackBufferHeight = 500;
-		_graphics.PreferredBackBufferWidth = 500;
+		_graphics.PreferredBackBufferHeight = 750;
+		_graphics.PreferredBackBufferWidth = 750;
 		_graphics.ApplyChanges();
 
 		Pixel = new(GraphicsDevice, 1, 1);
@@ -47,7 +47,8 @@ public class Main : Game
 		ParticleGrid.RegisterParticle(solidParticle);
 		ParticleGrid.RegisterParticle(waterParticle);
 		ParticleGrid.RegisterParticle(acidParticle);
-		grid = new(new Vector2(0, 0), 5, 100, 100);
+		grid = new(new Vector2(0, 0), 5, 150, 150);
+		ParticleGrid.ChunkDebug = true;
 		DrawableParticleGrid.ParticleId = ParticleGrid.IdFromParticle(sandParticle);
 
 		base.Initialize();

@@ -18,9 +18,9 @@ public class Sand : IParticle, IDensity, ICorrodible
 		Point down = position + new Point(0, 1);
 		Point downRight = position + new Point(1, 1);
 		Point downLeft = position + new Point(-1, 1);
-		if (grid.TryDensityMove(this, position, down)) return;
-		else if(grid.TryDensityMove(this, position, ParticleUtility.RandomBool() ? downLeft : downRight)) return;
-		else if(grid.TryDensityMove(this, position, downRight)) return;
-		else if(grid.TryDensityMove(this, position, downLeft)) return;
+		if (grid.TryDensityOrMove(this, position, down)) return;
+		else if(grid.TryDensityOrMove(this, position, ParticleUtility.RandomBool() ? downLeft : downRight)) return;
+		else if(grid.TryDensityOrMove(this, position, downRight)) return;
+		else if(grid.TryDensityOrMove(this, position, downLeft)) return;
 	}
 }

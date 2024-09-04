@@ -21,60 +21,33 @@ public class Acid : IParticle, IDensity, ICorrosive
 		Point downLeft = position + new Point(-1, 1);
 		Point right = position + new Point(1, 0);
 		Point left = position + new Point(-1, 0);
-		if (DoCalculation(grid, position, down))
+		if (grid.TryCorrode(this, position, down))
 			return;
 		else if (grid.TryDensityOrMove(this, position, down))
 			return;
-		else if (DoCalculation(grid, position, goRight ? downRight : downLeft))
+		else if (grid.TryCorrode(this, position, goRight ? downRight : downLeft))
 			return;
 		else if (grid.TryDensityOrMove(this, position, goRight ? downRight : downLeft))
 			return;
-		else if(DoCalculation(grid, position, downRight))
+		else if(grid.TryCorrode(this, position, downRight))
 			return;
 		else if (grid.TryDensityOrMove(this, position, downRight))
 			return;
-		else if(DoCalculation(grid, position, downLeft))
+		else if(grid.TryCorrode(this, position, downLeft))
 			return;
 		else if (grid.TryDensityOrMove(this, position, downLeft))
 			return;
-		else if(DoCalculation(grid, position, goRight ? right : left))
+		else if(grid.TryCorrode(this, position, goRight ? right : left))
 			return;
 		else if (grid.TryDensityOrMove(this, position, goRight ? right : left))
 			return;
-		else if(DoCalculation(grid, position, right))
+		else if(grid.TryCorrode(this, position, right))
 			return;
 		else if (grid.TryDensityOrMove(this, position, right))
 			return;
-		else if(DoCalculation(grid, position, left))
+		else if(grid.TryCorrode(this, position, left))
 			return;
 		else if (grid.TryDensityOrMove(this, position, left))
 			return;
-	}
-
-	bool DoCalculation(ParticleGrid grid, Point from, Point to)
-	{
-		if (!grid.IsInsideBounds(to))
-			return false;
-
-		ICorrodible otherParticle = grid.GetParticle(to) as ICorrodible;
-		if (otherParticle != null)
-		{
-			if (otherParticle.CanBeCorroded(this))
-			{
-				grid.MoveParticle(from, to);
-				return true;
-			}
-			if (otherParticle != this)
-				grid.UpdateSurroundingChunks(from);
-		}
-		else
-		{
-			if (grid.ValidMovePosition(to))
-			{
-				grid.MoveParticle(from, to);
-				return true;
-			}
-		}
-		return false;
 	}
 }

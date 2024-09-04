@@ -43,10 +43,10 @@ public class Main : Game
 		Pixel = new(GraphicsDevice, 1, 1);
 		Pixel.SetData(new[] { Color.White });
 
-		ParticleGrid.RegisterParticle(sandParticle);
-		ParticleGrid.RegisterParticle(solidParticle);
-		ParticleGrid.RegisterParticle(waterParticle);
-		ParticleGrid.RegisterParticle(acidParticle);
+		ParticleGrid.RegisterParticle(sandParticle, "Sand");
+		ParticleGrid.RegisterParticle(waterParticle, "Water");
+		ParticleGrid.RegisterParticle(solidParticle, "Solid");
+		ParticleGrid.RegisterParticle(acidParticle, "Acid");
 		grid = new(new Vector2(0, 0), 5, 150, 150);
 		ParticleGrid.ChunkDebug = true;
 		DrawableParticleGrid.ParticleId = ParticleGrid.IdFromParticle(sandParticle);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 public static class ParticleGridExtensions
 {
@@ -76,4 +77,25 @@ public static class ParticleGridExtensions
 			SpriteEffects.None,
 			layerDepth);
 	}
+
+	public static bool IsTouching(this ParticleGrid grid, Point position, int particleId, int min = 1)
+	{
+		int touches = 0;
+		Point up = position + new Point(0, -1);
+		Point down = position + new Point(0, 1);
+		Point right = position + new Point(1, 0);
+		Point left = position + new Point(-1, 0);
+		if (grid.IsInsideBounds(up) && grid.GetId(up) == particleId) 
+			touches++;
+		if (grid.IsInsideBounds(down) && grid.GetId(down) == particleId)
+			touches++;
+		if (grid.IsInsideBounds(right) && grid.GetId(right) == particleId)
+			touches++;
+		if (grid.IsInsideBounds(left) && grid.GetId(left) == particleId)
+			touches++;
+		return touches >= min;
+
+	}
+
+	public static bool IsSurrounded(this ParticleGrid grid, Point position, int particleId) => IsTouching(grid, position, particleId, 4);
 }

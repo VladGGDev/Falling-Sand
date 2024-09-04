@@ -4,8 +4,9 @@ using System.Collections.Generic;
 public class ParticleGrid
 {
 	static Random _rand = new();
-	static Dictionary<int, IParticle> _particles = [];
-	static Dictionary<IParticle, int> _ids = [];
+	static Dictionary<int, IParticle> _particles = new() { [0] = null };
+	static Dictionary<IParticle, int> _ids = []; // new() { [null] = 0 };
+	static Dictionary<string, int> _names = new() { ["Air"] = 0 };
 
 	public Vector2 Position { get; set; } = Vector2.Zero;
 	public float Scale { get; set; } = 1f;
@@ -26,6 +27,7 @@ public class ParticleGrid
 	public static bool ChunkDebug { get; set; } = false;
 
 	public float[,] NoiseGrid { get; }
+
 
 	public ParticleGrid(int width, int height, int chunkSize = 8)
 	{
@@ -74,11 +76,11 @@ public class ParticleGrid
 
 			for (int x = startX; (dx > 0 ? x <= targetX : x >= targetX); x += dx)
 			{
+				if (!IsChunkUpdated(x, y))
+					continue;
 				if (_grid[y, x] == 0) // Skip over empty particles
 					continue;
 				if (_updated[y, x]) // Don't update the same particle multiple times
-					continue;
-				if (!IsChunkUpdated(x, y))
 					continue;
 
 				IParticle current = ParticleFromId(_grid[y, x]);
@@ -134,17 +136,20 @@ public class ParticleGrid
 
 
 	#region Static functions
-	public static void RegisterParticle(IParticle particle, int id)
+	public static void RegisterParticle(IParticle particle, string name, int id)
 	{
 		if (id == 0)
 			throw new ArgumentException("Id cannot be 0");
 		if (_particles.ContainsKey(id))
 			throw new ArgumentException($"Id {id} is already registered.");
+		if (_names.ContainsKey(name))
+			throw new ArgumentException($"Name {name} is already registered.");
 		_particles[id] = particle;
+		_names[name] = id;
 		_ids[particle] = id;
 	}
 
-	public static void RegisterParticle(IParticle particle)
+	public static void RegisterParticle(IParticle particle, string name)
 	{
 		int id;
 		do
@@ -153,13 +158,21 @@ public class ParticleGrid
 		} while (id == 0 || _particles.ContainsKey(id));
 
 		_particles[id] = particle;
+		_names[name] = id;
 		_ids[particle] = id;
 	}
 
 
 
 	public static IParticle ParticleFromId(int id) => _particles[id];
-	public static int IdFromParticle(IParticle particle) => _ids[particle];
+	public static int IdFromParticle(IParticle particle)
+	{
+		if (particle == null)
+			return 0;
+		return _ids[particle];
+	}
+	public static int IdFromName(string name) => _names[name];
+	public static IParticle ParticleFromName(string name) => ParticleFromId(_names[name]);
 	#endregion
 
 

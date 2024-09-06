@@ -16,6 +16,8 @@ public class Main : Game
 	Solid solidParticle = new();
 	Water waterParticle = new();
 	Acid acidParticle = new();
+	Smoke smokeParticle = new();
+	Fire fireParticle = new();
 	DrawableParticleGrid grid;
 
 	public static readonly bool IsDebug = false;
@@ -47,6 +49,8 @@ public class Main : Game
 		ParticleGrid.RegisterParticle(waterParticle, "Water");
 		ParticleGrid.RegisterParticle(solidParticle, "Solid");
 		ParticleGrid.RegisterParticle(acidParticle, "Acid");
+		ParticleGrid.RegisterParticle(smokeParticle, "Smoke");
+		ParticleGrid.RegisterParticle(fireParticle, "Fire");
 		grid = new(new Vector2(0, 0), 5, 150, 150);
 		ParticleGrid.ChunkDebug = true;
 		DrawableParticleGrid.ParticleId = ParticleGrid.IdFromParticle(sandParticle);
@@ -81,6 +85,10 @@ public class Main : Game
 			DrawableParticleGrid.ParticleId = ParticleGrid.IdFromParticle(solidParticle);
 		if (Input.GetKeyDown(Keys.D4))
 			DrawableParticleGrid.ParticleId = ParticleGrid.IdFromParticle(acidParticle);
+		if (Input.GetKeyDown(Keys.D5))
+			DrawableParticleGrid.ParticleId = ParticleGrid.IdFromParticle(fireParticle);
+		if (Input.GetKeyDown(Keys.D6))
+			DrawableParticleGrid.ParticleId = ParticleGrid.IdFromParticle(smokeParticle);
 
 		if (!Input.GetKey(Keys.Space) && IsDebug)
 			return;

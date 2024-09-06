@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 public static class ParticleGridExtensions
 {
@@ -48,6 +47,26 @@ public static class ParticleGridExtensions
 	public static bool ValidMovePosition(this ParticleGrid grid, Point position)
 	{
 		return grid.IsInsideBounds(position) && !grid.AnyParticle(position);
+	}
+
+	public static bool AnyValidMovePosition(this ParticleGrid grid, params Point[] positions)
+	{
+		for (int i = 0; i < positions.Length; i++)
+		{
+			if (grid.IsInsideBounds(positions[i]) && !grid.AnyParticle(positions[i]))
+				return true;
+		}
+		return false;
+	}
+
+	public static bool AllValidMovePosition(this ParticleGrid grid, params Point[] positions)
+	{
+		for (int i = 0; i < positions.Length; i++)
+		{
+			if (!grid.IsInsideBounds(positions[i]) || grid.AnyParticle(positions[i]))
+				return false;
+		}
+		return true;
 	}
 
 	public static void DrawParticleGrid(this SpriteBatch spriteBatch, ParticleGrid grid, float layerDepth = 0)

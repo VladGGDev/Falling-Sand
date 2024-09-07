@@ -13,5 +13,8 @@ public class Solid : IParticle, ICorrodible
 	public void Update(ParticleGrid grid, Point position)
 	{
 		// Nothing
+		// Burn with fire
+		//if (grid.IsTouching(position, ParticleGrid.IdFromName("Fire")))
+		//	grid.CreateParticle(ParticleGrid.IdFromName("Fire"), position);
 	}
 }

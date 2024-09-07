@@ -13,12 +13,14 @@ public class ParticleGrid
 
 	public Texture2D Texture { get; private set; }
 
+	// Simulation grid
 	public int Width { get; }
 	public int Height { get; }
 	public Point Dimensions => new(Width, Height);
 	int[,] _grid;
 	bool[,] _updated;
 
+	// Chunks
 	public int ChunkSize { get; }
 	public int ChunksX { get; }
 	public int ChunksY { get; }
@@ -27,6 +29,9 @@ public class ParticleGrid
 	public static bool ChunkDebug { get; set; } = false;
 
 	public float[,] NoiseGrid { get; }
+
+	// Particle data
+	Dictionary<Point, ParticleData> _particleData = [];
 
 
 	public ParticleGrid(int width, int height, int chunkSize = 8)
@@ -234,11 +239,13 @@ public class ParticleGrid
 	public void CreateParticle(int particleId, int x, int y)
 	{
 		_grid[y, x] = particleId;
+		RemoveData(x, y);
 	}
 	public void CreateParticle(int particleId, Point poisition, bool updateChunk = false) => CreateParticle(particleId, poisition.X, poisition.Y, updateChunk);
 	public void CreateParticle(int particleId, int x, int y, bool updateChunk = false)
 	{
 		_grid[y, x] = particleId;
+		RemoveData(x, y);
 		if (updateChunk)
 			UpdateSurroundingChunks(x, y);
 	}
@@ -247,6 +254,7 @@ public class ParticleGrid
 	public void DeleteParticle(int x, int y)
 	{
 		_grid[y, x] = 0;
+		RemoveData(x, y);
 		UpdateSurroundingChunks(x, y);
 	}
 
@@ -254,6 +262,7 @@ public class ParticleGrid
 	public void MoveParticle(Point from, Point to)
 	{
 		CreateParticle(_grid[from.Y, from.X], to.X, to.Y, true);
+		MoveData(from, to);
 		DeleteParticle(from);
 		_updated[to.Y, to.X] = true;
 		//UpdateSurroundingChunks(to.X, to.Y);
@@ -316,6 +325,50 @@ public class ParticleGrid
 	{
 		x = Math.Clamp(x, 0, Width - 1);
 		y = Math.Clamp(y, 0, Height - 1);
+	}
+	#endregion
+
+
+
+	#region Particle data
+	public bool HasData(int x, int y) => HasData(new(x, y));
+	public bool HasData(Point position)
+	{
+		return _particleData.ContainsKey(position);
+	}
+
+	public TParticleData Data<TParticleData>(int x, int y, TParticleData defaultValue) where TParticleData : ParticleData
+		=> Data(new(x, y), defaultValue);
+	public TParticleData Data<TParticleData>(Point position, TParticleData defaultValue) where TParticleData : ParticleData
+	{
+		if (!_particleData.ContainsKey(position))
+			_particleData[position] = defaultValue;
+		return _particleData[position] as TParticleData;
+	}
+
+	public void MoveData(int x1, int y1, int x2, int y2) => MoveData(new(x1, y1), new(x2, y2));
+	public void MoveData(Point from, Point to)
+	{
+		if (!HasData(from))
+			return;
+		_particleData[to] = _particleData[from];
+		_particleData.Remove(from);
+	}
+
+	public void CopyData(int x1, int y1, int x2, int y2) => CopyData(new(x1, y1), new(x2, y2));
+	public void CopyData(Point from, Point to)
+	{
+		if (!HasData(from))
+			return;
+		_particleData[to] = _particleData[from];
+	}
+
+	public void RemoveData(int x, int y) => RemoveData(new(x, y));
+	public void RemoveData(Point position)
+	{
+		if (!HasData(position))
+			return;
+		_particleData.Remove(position);
 	}
 	#endregion
 }

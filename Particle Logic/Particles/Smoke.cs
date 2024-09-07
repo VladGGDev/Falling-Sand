@@ -5,13 +5,27 @@ public class Smoke : IParticle, IDensity
 	public int Density { get; init; } = 100;
 	public float PassThroughChance { get; init; } = 0.9f;
 
+	public int Lifetime { get; init; } = 600;
+
 	public Color GetColor(ParticleGrid grid, Point position)
 	{
-		return Color.Lerp(new(64, 64, 64), new(128, 128, 128), grid.NoiseGrid(position));
+		Color normalColor = Color.Lerp(new(64, 64, 64), new(128, 128, 128), grid.NoiseGrid(position));
+		float alpha = (float)grid.Data(position, new SingleParticleData(Lifetime)).Data / Lifetime;
+		alpha = MathF.Min(alpha * 2, 1f);
+		return new Color(normalColor, alpha);
 	}
 
 	public void Update(ParticleGrid grid, Point position)
 	{
+		grid.UpdateSurroundingChunks(position);
+		SingleParticleData data = grid.Data(position, new SingleParticleData(Lifetime));
+		data.Data--;
+		if (data.Data <= 0)
+		{
+			grid.DeleteParticle(position);
+			return;
+		}
+
 		Point up = position + new Point(0, -1);
 		Point upRight = position + new Point(1, -1);
 		Point upLeft = position + new Point(-1, -1);
@@ -21,8 +35,8 @@ public class Smoke : IParticle, IDensity
 		
 		if (ParticleUtility.RandomBool(0.5f))
 		{
-			if (grid.AnyValidMovePosition(up, upRight, upLeft, right, left))
-				grid.UpdateSurroundingChunks(position);
+			//if (grid.AnyValidMovePosition(up, upRight, upLeft, right, left))
+			//	grid.UpdateSurroundingChunks(position);
 			return;
 		}
 
